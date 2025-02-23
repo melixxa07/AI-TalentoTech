@@ -1,0 +1,34 @@
+FROM python:3.8-slim-buster
+
+RUN pip install tensorflow numpy
+
+WORKDIR /app
+## The creation of the /app directory can be done before or after the installation of the dependencies. It doesn't matter!
+
+COPY train_model.py . 
+## This only copies the train_model.py file to the container
+
+CMD ["python", "train_model.py"]
+## This is going to run the train_model.py file when the container launches
+
+
+
+#TODO: Build and execute all services
+    # >> docker-compose up --build
+        ## Builds the Docker images (if not already built or if there are changes in the Dockerfile)
+        ## Starts all services defined in the docker-compose.yml file
+        ## --build is to build the images before starting the containers (if there are changes in the Dockerfile)
+
+#TODO: Verify the model has been saved
+    # >> docker-compose exec tensorflow-serving ls /models/my_model/1
+        ## This command is going to list the files in the /models/my_model/1 directory in the tensorflow-serving container
+        ## If the model has been saved correctly, you should see the saved model files in this directory
+
+#TODO: Make predictions using the model
+    # >> curl -X POST "http://localhost:8501/v1/models/my_model:predict" 
+    #               \-d '{"instances": [[2.0], [3.0], [4.0]]}'
+        ## Sends a POST request to TensorFlow Serving, which is running at http://localhost:8501/.
+        ## Calls the predict endpoint of my_model
+        ## Sends the data or input values [2.0], [3.0], [4.0] to the model for prediction
+        ## Passes a JSON object with instances, which contains the input values [[2.0], [3.0], [4.0]]. This is the data that we want to predict on
+

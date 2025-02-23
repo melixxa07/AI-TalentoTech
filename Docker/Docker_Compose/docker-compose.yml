@@ -1,0 +1,82 @@
+version: '3'
+
+# Services are the containers that make up your application
+
+# Service 1: Jupyter Notebook
+services:    
+  jupyter:
+    image: jupyter/tensorflow-notebook    # Runs a Jupyter Notebook with TensorFlow pre-installed
+    ports:
+      - "8888:8888"    # Exposes port 8888, allowing access from a web browser: http://localhost:8888
+    volumes:
+      - ./notebooks:/home/jovyan/work  # Saves your work in a volume (notebooks:/home/jovyan/work), so notebooks are not lost when the container stops
+    networks:
+      - ai-network    # Connects to the ai-network, allowing it to communicate with other services.
+
+
+# Service 1.5: We need to create a service to train the model      
+  train:
+    build:  # Builds a custom Docker image for training the machine learning model
+      context: .  # The build context is the current directory (.), meaning all necessary files should be in this directory
+      dockerfile: Dockerfile.train   # Specifies a custom Dockerfile (Dockerfile.train) used to build the training image
+    volumes:
+      - ./models:/models  # Mounts the local ./models directory to /models inside the container. This allows the trained model to be saved locally
+    networks:
+      - ai-network   # Connects the train service to a custom network, allowing it to communicate with other services in the network
+
+
+# Service 2: TensorFlow Serving
+  tensorflow-serving:
+    image: tensorflow/serving   # Runs TensorFlow Serving, which allows you to serve trained machine learning models as an API.
+    ports:
+      - "8501:8501"   # Accessible at http://localhost:8501, so other apps can send HTTP requests to make predictions
+    volumes:
+      - ./models:/models  # Loads models from models:/models, meaning any trained models you save there will be served by TensorFlow Serving.
+    networks:
+      - ai-network   # Connects to the ai-network, allowing it to communicate with jupyter notebook service
+
+networks:    
+  ai-network:   # ai-network is a bridge network that lets jupyter and tensorflow-serving talk to each other
+    driver: bridge
+## For example, Jupyter Notebook can send requests to tensorflow-serving to get predictions.
+
+volumes:
+  notebooks:  # notebooks → Stores Jupyter notebooks permanently.
+  models:  # models → Stores trained machine learning models that tensorflow-serving will use.
+
+
+
+
+
+
+#TODO:  1. Start all services (both Jupyter Notebook and TensorFlow Serving) in the background
+    # >> docker-compose up -d
+
+#TODO:  2. Verify running services
+    # >> docker-compose ps
+      ## This will list all containers managed by docker-compose, showing their status and ports
+      ## If STATE is Up, the services are running correctly
+
+#TODO:  3. Get the Jupyter Notebook URL
+    # >> docker-compose logs jupyter
+      ## This prints the logs of the jupyter service, including the URL to access the Jupyter Notebook
+      ## Copy the URL and paste it in a web browser to access the Jupyter Notebook
+      ## You can also obtain the token here, which is required to log in after accessing to http://localhost:8888
+
+#TODO:  Last Step (optional): Stop all services
+    # >> docker-compose down
+      ## This will stop and remove all containers, networks, and volumes created by docker-compose up
+
+##-------------------------------------------------------------------------------------
+
+#TODO: -> Access Jupyter Notebook:
+    # Open a web browser and go to http://localhost:8888
+    # Copy the token from the terminal and paste it in the browser to log in.
+
+#TODO: -> Access TensorFlow Serving:
+    # Open a web browser and go to http://localhost:8501
+    # You should see a list of available models.
+
+
+
+
