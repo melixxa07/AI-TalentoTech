@@ -56,3 +56,7 @@ CMD ["python", "train_model.py"]
 # This is useful because it means that I can make changes to my code on my local machine and they will be reflected inside the container.   
 # This is also useful because any file II write to /app inside the container will actually be saved to my local folder. 
 # So I can see the saved files or images from the code on my local machine.
+
+
+# IMPORTANT NOTE: Docker can also create everything for you by using the following command:
+    # >> docker init
