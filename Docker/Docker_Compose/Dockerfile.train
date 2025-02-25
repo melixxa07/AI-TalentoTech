@@ -13,6 +13,11 @@ CMD ["python", "train_model.py"]
 
 
 
+
+
+
+
+
 #TODO: Build and execute all services
     # >> docker-compose up --build
         ## Builds the Docker images (if not already built or if there are changes in the Dockerfile)

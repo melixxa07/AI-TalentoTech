@@ -17,7 +17,7 @@ model.compile(optimizer='adam', loss='mse')
 model.fit(X_train, y_train, epochs=100, verbose=0)
 
 # Save the model
-model_dir = '/models/my_model/1'
+model_dir = '/models/model/1'
 os.makedirs(model_dir, exist_ok=True)
 model.save(model_dir)
 print('Model saved to', model_dir)
