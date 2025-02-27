@@ -65,7 +65,7 @@ def compute_metrics(eval_pred):
 
 # 6. Training arguments
 training_args = TrainingArguments(
-    output_dir="./results",
+    output_dir="HuggingFace/results",
     num_train_epochs=3,
     per_device_train_batch_size=16,
     per_device_eval_batch_size=64,
