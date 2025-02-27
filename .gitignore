@@ -1,2 +1,5 @@
 Solar_Panel_Classification.ipynb
 TalentoTech_Docs/
+PyTorch/
+__pycache__/
+*.log
