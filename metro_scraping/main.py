@@ -8,7 +8,7 @@ import asyncio
 import json
 
 
-MINIMUM_TWEETS = 30
+MINIMUM_TWEETS = 300
 USERNAME = 'metrodemedellin'
 QUERY = '(llegar OR llego OR voy OR ruta) (@metrodemedellin) lang:es'
 
@@ -87,8 +87,15 @@ async def main():
         except TooManyRequests as e:
             rate_limit_reset = datetime.fromtimestamp(e.rate_limit_reset)
             print(f'{datetime.now()} - Rate limit reached. Waiting until {rate_limit_reset}')
-            wait_time = rate_limit_reset - datetime.now()
-            await asyncio.sleep(max(wait_time.total_seconds(), 0))
+            #wait_time = rate_limit_reset - datetime.now()
+            #await asyncio.sleep(max(wait_time.total_seconds(), 0))
+            wait_time = (rate_limit_reset - datetime.now()).total_seconds()
+            print(f'{datetime.now()} - Rate limit reached. Waiting {wait_time:.2f} seconds...')
+            
+            ###await asyncio.sleep(wait_time)
+            
+            if wait_time > 0:
+                await asyncio.sleep(wait_time)
             continue
             
 
@@ -144,7 +151,7 @@ async def main():
                 writer = csv.writer(file)
                 writer.writerow(tweet_data)
                 
-            print(tweet_data)
+            #print(tweet_data)
             #& print(json.dumps(tweet._data, indent=2, ensure_ascii=False))
         
 
